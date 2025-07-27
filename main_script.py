@@ -20,6 +20,7 @@ if not os.path.exists(DOWNLOAD_DIR):
 # --- Part 1: Get all video links from the playlist ---
 print(f"Current working directory: {os.getcwd()}")
 
+# remeber to create a .env file 
 load_dotenv()
 
 API_KEY = os.getenv("API_KEY", " ") 
