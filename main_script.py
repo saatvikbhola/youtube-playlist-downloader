@@ -10,6 +10,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.firefox.options import Options
+from webdriver_manager.firefox import GeckoDriverManager
 
 # --- Create a directory for downloads if it doesn't exist ---
 DOWNLOAD_DIR = os.path.join(os.getcwd(), "downloads")
@@ -54,8 +55,8 @@ except Exception as e:
 
 # --- Part 2: Process videos using multiple threads ---
 
-BASE_URL = "https://y2mate.nu/en-s60K/"
-GECKO_DRIVER_PATH = 'geckodriver.exe'
+BASE_URL = "https://y2mate.nu/ysM1/"
+DRIVER_PATH ="geckodriver.exe" #GeckoDriverManager().install()
 
 def download_video(video_url):
     """
@@ -64,7 +65,7 @@ def download_video(video_url):
     """
     firefox_options = Options()
     # To prevent dozens of windows from opening, headless is strongly recommended
-    firefox_options.add_argument("--headless")
+    #firefox_options.add_argument("--headless")
     
     # --- Configure Firefox to auto-download files ---
     firefox_options.set_preference("browser.download.folderList", 2) # 0 for desktop, 1 for default downloads, 2 for custom folder
@@ -72,20 +73,25 @@ def download_video(video_url):
     firefox_options.set_preference("browser.download.useDownloadDir", True)
     firefox_options.set_preference("browser.helperApps.neverAsk.saveToDisk", "video/mp4, application/octet-stream") # Add other MIME types if needed
 
-    service = Service(GECKO_DRIVER_PATH)
     driver = None
     try:
+        service = Service(DRIVER_PATH)
         driver = webdriver.Firefox(service=service, options=firefox_options)
+        
         print(f"THREAD: Starting to process {video_url}")
         driver.get(BASE_URL)
 
+        
+        # URL of video 
         input_field = WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.ID, "v")))
         input_field.send_keys(video_url)
         input_field.send_keys(Keys.RETURN)
 
+        # click download button
         download_button = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Download')]")))
         download_button.click()
 
+        # click next button
         next_button = WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Next')]")))
         next_button.click()
         

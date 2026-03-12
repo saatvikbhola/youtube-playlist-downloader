@@ -1,0 +1,9 @@
+rich 
+google-api-python-client 
+selenium 
+python-dotenv
+setuptools
+textual
+pyfiglet
+yt-dlp
+mutagen
